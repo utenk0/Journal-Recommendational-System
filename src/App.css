@@ -237,6 +237,12 @@ textarea.text-input {
   cursor: pointer;
 }
 
+.primary-button:disabled,
+.ghost-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .ghost-button {
   background: transparent;
   border: 1px solid var(--line);
@@ -261,6 +267,27 @@ textarea.text-input {
   color: var(--muted);
 }
 
+.status-panel {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.status-panel p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.status-error {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -277,6 +304,18 @@ textarea.text-input {
   animation: cardRise 0.7s ease forwards;
   opacity: 0;
   transform: translateY(12px);
+  border: 1px solid transparent;
+  text-align: left;
+  width: 100%;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 44px rgba(15, 23, 42, 0.12);
 }
 
 .card-header {
@@ -337,6 +376,203 @@ textarea.text-input {
   gap: 10px;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+.card-footer p {
+  margin: 0;
+}
+
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #1d4ed8;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.journal-detail {
+  margin-top: 10px;
+}
+
+.detail-page-shell {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.detail-page-content {
+  display: grid;
+}
+
+.detail-back-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.detail-empty {
+  place-items: center;
+  text-align: center;
+}
+
+.detail-empty h3,
+.detail-empty p,
+.detail-title-row h2,
+.detail-title-row p,
+.token-block h3 {
+  margin: 0;
+}
+
+.detail-eyebrow {
+  margin-bottom: 8px;
+  color: #1d4ed8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detail-description {
+  margin-top: 10px;
+  color: var(--muted);
+  max-width: 56ch;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: 32px;
+  margin-top: 24px;
+}
+
+.detail-grid {
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.detail-row dt {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  text-align: right;
+}
+
+.detail-row dd {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.detail-side {
+  display: grid;
+  gap: 22px;
+  align-content: start;
+}
+
+.detail-links {
+  display: grid;
+  gap: 10px;
+}
+
+.detail-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid #60a5fa;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #2563eb;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.detail-link:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.token-block {
+  display: grid;
+  gap: 12px;
+}
+
+.token-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.token-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #1e293b;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 1100px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .detail-row dt {
+    text-align: left;
+  }
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 20px 18px 56px;
+  }
+
+  .topbar {
+    gap: 16px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .panel {
+    padding: 20px;
+  }
+
+  .panel-header {
+    flex-direction: column;
+  }
+
+  .panel-metrics {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .card-footer button {

@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "node server/server.mjs",
     "build": "vite build",
+    "generate:data": "python3 scripts/generate_mock_journals.py",
     "lint": "eslint .",
     "preview": "vite preview"
   },
