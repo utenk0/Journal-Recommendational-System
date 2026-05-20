@@ -6,8 +6,6 @@ function Sidebar({
   setOpenAccessOnly,
   mscCode,
   setMscCode,
-  sortBy,
-  setSortBy,
 }) {
   return (
     <aside className="sidebar">
@@ -67,24 +65,6 @@ function Sidebar({
         </div>
       </div>
 
-      {!openAccessOnly && (
-        <div className="sidebar-section">
-          <h3>Sorting</h3>
-          <div className="field-group">
-            <label className="select-label" htmlFor="sortBy">
-              Sort by
-            </label>
-            <select
-              id="sortBy"
-              value={sortBy}
-              onChange={(event) => setSortBy(event.target.value)}
-            >
-              <option value="relevance">Relevance</option>
-              <option value="match">Match score</option>
-            </select>
-          </div>
-        </div>
-      )}
     </aside>
   )
 }

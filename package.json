@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:api": "node server/server.mjs",
+    "dev:api": "python3 -m uvicorn fastapi_backend.main:app --host 127.0.0.1 --port 8787",
     "build": "vite build",
     "generate:data": "python3 scripts/generate_mock_journals.py",
     "lint": "eslint .",

@@ -2,7 +2,7 @@ async function readJson(response) {
   const payload = await response.json()
 
   if (!response.ok) {
-    throw new Error(payload.error || 'Request failed')
+    throw new Error(payload.error || payload.detail || 'Request failed')
   }
 
   return payload

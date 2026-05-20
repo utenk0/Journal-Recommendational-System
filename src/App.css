@@ -294,6 +294,11 @@ textarea.text-input {
   gap: 18px;
 }
 
+.results-actions {
+  display: flex;
+  justify-content: center;
+}
+
 .card {
   background: white;
   border-radius: 18px;

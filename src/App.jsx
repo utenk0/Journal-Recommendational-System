@@ -16,7 +16,6 @@ function App() {
   const [domain, setDomain] = useState('all')
   const [openAccessOnly, setOpenAccessOnly] = useState(false)
   const [mscCode, setMscCode] = useState('')
-  const [sortBy, setSortBy] = useState('relevance')
   const [draftTitle, setDraftTitle] = useState('artificial intelligence for science')
   const [draftAbstractText, setDraftAbstractText] = useState('')
   const [draftReferences, setDraftReferences] = useState('')
@@ -61,7 +60,7 @@ function App() {
           domain,
           openAccessOnly,
           keyword: mscCode,
-          sortBy,
+          sortBy: 'match',
         })
 
         if (abortController.signal.aborted) return
@@ -82,7 +81,7 @@ function App() {
 
     loadJournals()
     return () => abortController.abort()
-  }, [routeJournalId, searchTitle, searchAbstractText, searchReferences, domain, openAccessOnly, mscCode, sortBy, resultsReloadKey])
+  }, [routeJournalId, searchTitle, searchAbstractText, searchReferences, domain, openAccessOnly, mscCode, resultsReloadKey])
 
   useEffect(() => {
     if (routeJournalId === null) return undefined
@@ -186,8 +185,6 @@ function App() {
           setOpenAccessOnly={setOpenAccessOnly}
           mscCode={mscCode}
           setMscCode={setMscCode}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
         />
 
         <main className="content">
