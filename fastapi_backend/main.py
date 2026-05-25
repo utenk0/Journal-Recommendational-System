@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi_backend.schemas import JournalListResponse
+from fastapi_backend.schemas import RecommendationSearchResponse
 from fastapi_backend.services.journal_service import get_journal_by_id, get_journals
 
 app = FastAPI(title="Journal Recommendation API")
@@ -15,7 +15,7 @@ app.add_middleware(
 )
 
 
-@app.get("/api/journals", response_model=JournalListResponse)
+@app.get("/api/journals", response_model=RecommendationSearchResponse)
 def list_journals(
     title: str = "",
     abstractText: str = "",

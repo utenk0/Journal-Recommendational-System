@@ -27,11 +27,11 @@ function ManuscriptForm({
             <strong>{isLoading ? '...' : resultsTotal}</strong>
           </div>
           <div>
-            <span className="metric-label">Open Access</span>
+            <span className="metric-label">High Confidence</span>
             <strong>
               {isLoading
                 ? '...'
-                : filteredJournals.filter((journal) => journal.openAccess).length}
+                : filteredJournals.filter((journal) => journal.confidence === 'high').length}
             </strong>
           </div>
         </div>

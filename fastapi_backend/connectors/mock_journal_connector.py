@@ -1,11 +1,10 @@
+import copy
 import json
 from pathlib import Path
 
-from fastapi_backend.normalizer import normalize_journal
-
-JOURNALS_FILE = Path(__file__).resolve().parents[2] / "src" / "data" / "journals.json"
+RECOMMENDATIONS_FILE = Path(__file__).resolve().parents[1] / "data" / "frontend_recommendations.json"
 
 
-def load_journals() -> list[dict]:
-    parsed = json.loads(JOURNALS_FILE.read_text(encoding="utf-8"))
-    return [normalize_journal(journal) for journal in parsed]
+def load_recommendation_payload() -> dict:
+    parsed = json.loads(RECOMMENDATIONS_FILE.read_text(encoding="utf-8"))
+    return copy.deepcopy(parsed)

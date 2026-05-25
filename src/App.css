@@ -323,6 +323,43 @@ textarea.text-input {
   box-shadow: 0 24px 44px rgba(15, 23, 42, 0.12);
 }
 
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.confidence-pill,
+.rank-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.confidence-high {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.confidence-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.confidence-low {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.rank-pill {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -340,21 +377,46 @@ textarea.text-input {
   margin: 0;
 }
 
-.card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.supporting-preview {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f8fafc;
 }
 
-.card-tags .chip {
-  background: #eff6ff;
-  color: #1e3a8a;
+.supporting-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.supporting-paper-item {
+  display: grid;
+  gap: 4px;
+}
+
+.supporting-paper-item strong {
+  font-size: 0.94rem;
+}
+
+.supporting-paper-item span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.inline-button {
+  justify-self: start;
+  background: transparent;
+  border: none;
+  color: #1d4ed8;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
-}
-
-.card-tags .chip-oa {
-  background: #ecfdf3;
-  color: #047857;
+  cursor: pointer;
+  padding: 0;
 }
 
 .match-ring {
@@ -514,20 +576,25 @@ textarea.text-input {
 }
 
 .token-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 10px;
 }
 
-.token-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: #f1f5f9;
-  color: #1e293b;
+.supporting-paper-card {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.supporting-paper-card strong {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.92rem;
+}
+
+.supporting-paper-card span {
+  color: var(--muted);
+  font-size: 0.86rem;
 }
 
 @media (max-width: 1100px) {

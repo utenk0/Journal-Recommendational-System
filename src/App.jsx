@@ -4,12 +4,21 @@ import JournalDetails from './components/JournalDetails'
 import ManuscriptForm from './components/ManuscriptForm'
 import Results from './components/Results'
 import Sidebar from './components/Sidebar'
-import { FILTER_DOMAINS } from '../shared/journalNormalizer.js'
 import './App.css'
+
+const FILTER_DOMAINS = ['Mathematics', 'Physics']
 
 function readJournalIdFromHash() {
   const match = window.location.hash.match(/journal=([^&]+)/)
   return match ? decodeURIComponent(match[1]) : null
+}
+
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60)
 }
 
 function App() {
@@ -24,6 +33,7 @@ function App() {
   const [searchReferences, setSearchReferences] = useState('')
   const [routeJournalId, setRouteJournalId] = useState(() => readJournalIdFromHash())
   const [journals, setJournals] = useState([])
+  const [query, setQuery] = useState(null)
   const [resultsTotal, setResultsTotal] = useState(0)
   const [isResultsLoading, setIsResultsLoading] = useState(false)
   const [resultsError, setResultsError] = useState('')
@@ -65,11 +75,13 @@ function App() {
 
         if (abortController.signal.aborted) return
 
-        setJournals(payload.items)
-        setResultsTotal(payload.total)
+        setQuery(payload.query)
+        setJournals(payload.recommendations)
+        setResultsTotal(payload.recommendations.length)
       } catch (error) {
         if (abortController.signal.aborted) return
         setResultsError(error instanceof Error ? error.message : 'Failed to load journals')
+        setQuery(null)
         setJournals([])
         setResultsTotal(0)
       } finally {
@@ -126,6 +138,58 @@ function App() {
     setSearchTitle('')
     setSearchAbstractText('')
     setSearchReferences('')
+    setQuery(null)
+  }
+
+  const exportBrief = () => {
+    const exportedQuery = query || {
+      title: searchTitle || 'Untitled manuscript',
+      abstract: searchAbstractText || '',
+    }
+
+    const lines = [
+      'ScholarAI Recommendation Brief',
+      '',
+      `Title: ${exportedQuery.title || 'Untitled manuscript'}`,
+      `Abstract: ${exportedQuery.abstract || 'No abstract provided.'}`,
+      '',
+      'Filters',
+      `- Domain: ${domain}`,
+      `- Open access only: ${openAccessOnly ? 'Yes' : 'No'}`,
+      `- Keyword filter: ${mscCode || 'None'}`,
+      '',
+      `Recommendations (${journals.length})`,
+      '',
+    ]
+
+    journals.forEach((journal) => {
+      lines.push(`${journal.rank}. ${journal.journal_name}`)
+      lines.push(`   Match score: ${journal.match_score_percent}%`)
+      lines.push(`   Confidence: ${journal.confidence}`)
+      lines.push(`   ISSN: ${journal.issn.join(', ')}`)
+      lines.push(`   Reason: ${journal.reason}`)
+      lines.push(
+        `   Best matching paper: ${journal.best_matching_paper.title} (${journal.best_matching_paper.year})`,
+      )
+      lines.push(`   DOI: ${journal.best_matching_paper.doi}`)
+      lines.push(
+        `   Supporting papers (${journal.supporting_paper_count}): ${journal.supporting_papers.map((paper) => paper.title).join('; ')}`,
+      )
+      lines.push('')
+    })
+
+    const fileContents = lines.join('\n')
+    const blob = new Blob([fileContents], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const fileNameBase = slugify(exportedQuery.title || 'recommendation-brief') || 'recommendation-brief'
+
+    link.href = url
+    link.download = `${fileNameBase}-brief.txt`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   if (routeJournalId !== null) {
@@ -170,7 +234,12 @@ function App() {
         </div>
         <div className="topbar-meta">
           <span className="pill">Beta</span>
-          <button className="ghost-button" type="button">
+          <button
+            className="ghost-button"
+            type="button"
+            onClick={exportBrief}
+            disabled={isResultsLoading || journals.length === 0}
+          >
             Export Brief
           </button>
         </div>
@@ -204,7 +273,7 @@ function App() {
 
           <Results
             filteredJournals={journals}
-            title={searchTitle}
+            title={query?.title || searchTitle}
             isLoading={isResultsLoading}
             error={resultsError}
             onRetry={() => setResultsReloadKey((value) => value + 1)}
