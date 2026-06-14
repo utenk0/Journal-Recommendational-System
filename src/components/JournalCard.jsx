@@ -48,8 +48,6 @@ function JournalCard({ journal, index }) {
         <a
           className="card-link"
           href={detailHref}
-          target="_blank"
-          rel="noreferrer"
         >
           View journal
         </a>

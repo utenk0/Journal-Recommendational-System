@@ -468,6 +468,15 @@ textarea.text-input {
   margin: 0 auto;
 }
 
+.results-page-shell {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.results-page-content {
+  display: grid;
+}
+
 .detail-page-content {
   display: grid;
 }

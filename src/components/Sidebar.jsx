@@ -1,12 +1,4 @@
-function Sidebar({
-  domains,
-  domain,
-  setDomain,
-  openAccessOnly,
-  setOpenAccessOnly,
-  mscCode,
-  setMscCode,
-}) {
+function Sidebar({ domains, domain, setDomain }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-section">
@@ -25,46 +17,9 @@ function Sidebar({
               <span>{domainOption}</span>
             </label>
           ))}
-          <label className="radio-row">
-            <input
-              type="radio"
-              name="domain"
-              value="all"
-              checked={domain === 'all'}
-              onChange={() => setDomain('all')}
-            />
-            <span>All</span>
-          </label>
         </div>
 
-        <div className="field-group">
-          <label className="switch-row">
-            <input
-              type="checkbox"
-              checked={openAccessOnly}
-              onChange={(event) => setOpenAccessOnly(event.target.checked)}
-            />
-            <span className="switch-text">
-              Open Access
-              <small>Show only open access journals</small>
-            </span>
-          </label>
-        </div>
-
-        <div className="field-group">
-          <label className="field-label" htmlFor="msc">
-            Keyword filter
-          </label>
-          <input
-            id="msc"
-            className="text-input"
-            placeholder="e.g., Q1, AI, impact"
-            value={mscCode}
-            onChange={(event) => setMscCode(event.target.value)}
-          />
-        </div>
       </div>
-
     </aside>
   )
 }

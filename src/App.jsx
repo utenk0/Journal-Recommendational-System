@@ -8,9 +8,21 @@ import './App.css'
 
 const FILTER_DOMAINS = ['Mathematics', 'Physics']
 
-function readJournalIdFromHash() {
+function readRouteFromHash() {
   const match = window.location.hash.match(/journal=([^&]+)/)
-  return match ? decodeURIComponent(match[1]) : null
+
+  if (match) {
+    return {
+      name: 'journal',
+      journalId: decodeURIComponent(match[1]),
+    }
+  }
+
+  if (window.location.hash === '#results') {
+    return { name: 'results', journalId: null }
+  }
+
+  return { name: 'search', journalId: null }
 }
 
 function slugify(text) {
@@ -22,19 +34,16 @@ function slugify(text) {
 }
 
 function App() {
-  const [domain, setDomain] = useState('all')
-  const [openAccessOnly, setOpenAccessOnly] = useState(false)
-  const [mscCode, setMscCode] = useState('')
-  const [draftTitle, setDraftTitle] = useState('artificial intelligence for science')
+  const [domain, setDomain] = useState('Mathematics')
+  const [draftTitle, setDraftTitle] = useState('')
   const [draftAbstractText, setDraftAbstractText] = useState('')
   const [draftReferences, setDraftReferences] = useState('')
-  const [searchTitle, setSearchTitle] = useState('artificial intelligence for science')
+  const [searchTitle, setSearchTitle] = useState('')
   const [searchAbstractText, setSearchAbstractText] = useState('')
   const [searchReferences, setSearchReferences] = useState('')
-  const [routeJournalId, setRouteJournalId] = useState(() => readJournalIdFromHash())
+  const [route, setRoute] = useState(() => readRouteFromHash())
   const [journals, setJournals] = useState([])
   const [query, setQuery] = useState(null)
-  const [resultsTotal, setResultsTotal] = useState(0)
   const [isResultsLoading, setIsResultsLoading] = useState(false)
   const [resultsError, setResultsError] = useState('')
   const [detailJournal, setDetailJournal] = useState(null)
@@ -45,7 +54,7 @@ function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      setRouteJournalId(readJournalIdFromHash())
+      setRoute(readRouteFromHash())
     }
 
     window.addEventListener('hashchange', handleHashChange)
@@ -53,7 +62,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (routeJournalId !== null) return undefined
+    if (route.name !== 'results') return undefined
 
     const abortController = new AbortController()
 
@@ -68,8 +77,6 @@ function App() {
           abstractText: searchAbstractText,
           references: searchReferences,
           domain,
-          openAccessOnly,
-          keyword: mscCode,
           sortBy: 'match',
         })
 
@@ -77,13 +84,11 @@ function App() {
 
         setQuery(payload.query)
         setJournals(payload.recommendations)
-        setResultsTotal(payload.recommendations.length)
       } catch (error) {
         if (abortController.signal.aborted) return
         setResultsError(error instanceof Error ? error.message : 'Failed to load journals')
         setQuery(null)
         setJournals([])
-        setResultsTotal(0)
       } finally {
         if (!abortController.signal.aborted) {
           setIsResultsLoading(false)
@@ -93,10 +98,10 @@ function App() {
 
     loadJournals()
     return () => abortController.abort()
-  }, [routeJournalId, searchTitle, searchAbstractText, searchReferences, domain, openAccessOnly, mscCode, resultsReloadKey])
+  }, [route.name, searchTitle, searchAbstractText, searchReferences, domain, resultsReloadKey])
 
   useEffect(() => {
-    if (routeJournalId === null) return undefined
+    if (route.name !== 'journal') return undefined
 
     const abortController = new AbortController()
 
@@ -106,7 +111,7 @@ function App() {
       setDetailJournal(null)
 
       try {
-        const payload = await fetchJournalById(routeJournalId)
+        const payload = await fetchJournalById(route.journalId)
 
         if (abortController.signal.aborted) return
 
@@ -123,12 +128,19 @@ function App() {
 
     loadDetail()
     return () => abortController.abort()
-  }, [routeJournalId, detailReloadKey])
+  }, [route.name, route.journalId, detailReloadKey])
 
   const runSearch = () => {
     setSearchTitle(draftTitle)
     setSearchAbstractText(draftAbstractText)
     setSearchReferences(draftReferences)
+    setRoute({ name: 'results', journalId: null })
+
+    if (window.location.hash === '#results') {
+      setResultsReloadKey((value) => value + 1)
+    } else {
+      window.location.hash = 'results'
+    }
   }
 
   const clearSearch = () => {
@@ -155,8 +167,6 @@ function App() {
       '',
       'Filters',
       `- Domain: ${domain}`,
-      `- Open access only: ${openAccessOnly ? 'Yes' : 'No'}`,
-      `- Keyword filter: ${mscCode || 'None'}`,
       '',
       `Recommendations (${journals.length})`,
       '',
@@ -192,7 +202,7 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
-  if (routeJournalId !== null) {
+  if (route.name === 'journal') {
     return (
       <div className="page detail-page-shell">
         <header className="topbar">
@@ -204,8 +214,8 @@ function App() {
             </div>
           </div>
           <div className="topbar-meta">
-            <a className="ghost-button detail-back-link" href="/">
-              Back to search
+            <a className="ghost-button detail-back-link" href="#results">
+              Back to results
             </a>
           </div>
         </header>
@@ -216,6 +226,45 @@ function App() {
             isLoading={isDetailLoading}
             error={detailError}
             onRetry={() => setDetailReloadKey((value) => value + 1)}
+          />
+        </main>
+      </div>
+    )
+  }
+
+  if (route.name === 'results') {
+    return (
+      <div className="page results-page-shell">
+        <header className="topbar">
+          <div className="brand">
+            <span className="brand-mark" />
+            <div>
+              <p className="brand-title">ScholarAI</p>
+              <p className="brand-subtitle">Journal recommendations</p>
+            </div>
+          </div>
+          <div className="topbar-meta">
+            <a className="ghost-button detail-back-link" href="#">
+              Back to search
+            </a>
+            <button
+              className="ghost-button"
+              type="button"
+              onClick={exportBrief}
+              disabled={isResultsLoading || journals.length === 0}
+            >
+              Export Brief
+            </button>
+          </div>
+        </header>
+
+        <main className="results-page-content">
+          <Results
+            filteredJournals={journals}
+            title={query?.title || searchTitle}
+            isLoading={isResultsLoading}
+            error={resultsError}
+            onRetry={() => setResultsReloadKey((value) => value + 1)}
           />
         </main>
       </div>
@@ -250,10 +299,6 @@ function App() {
           domains={FILTER_DOMAINS}
           domain={domain}
           setDomain={setDomain}
-          openAccessOnly={openAccessOnly}
-          setOpenAccessOnly={setOpenAccessOnly}
-          mscCode={mscCode}
-          setMscCode={setMscCode}
         />
 
         <main className="content">
@@ -264,19 +309,8 @@ function App() {
             setAbstractText={setDraftAbstractText}
             references={draftReferences}
             setReferences={setDraftReferences}
-            filteredJournals={journals}
-            resultsTotal={resultsTotal}
-            isLoading={isResultsLoading}
             onSubmitSearch={runSearch}
             onClear={clearSearch}
-          />
-
-          <Results
-            filteredJournals={journals}
-            title={query?.title || searchTitle}
-            isLoading={isResultsLoading}
-            error={resultsError}
-            onRetry={() => setResultsReloadKey((value) => value + 1)}
           />
         </main>
       </div>

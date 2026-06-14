@@ -5,9 +5,6 @@ function ManuscriptForm({
   setAbstractText,
   references,
   setReferences,
-  filteredJournals,
-  resultsTotal,
-  isLoading,
   onSubmitSearch,
   onClear,
 }) {
@@ -20,20 +17,6 @@ function ManuscriptForm({
             Paste your manuscript details below for AI-powered journal
             recommendations.
           </p>
-        </div>
-        <div className="panel-metrics">
-          <div>
-            <span className="metric-label">Results</span>
-            <strong>{isLoading ? '...' : resultsTotal}</strong>
-          </div>
-          <div>
-            <span className="metric-label">High Confidence</span>
-            <strong>
-              {isLoading
-                ? '...'
-                : filteredJournals.filter((journal) => journal.confidence === 'high').length}
-            </strong>
-          </div>
         </div>
       </div>
 
@@ -48,6 +31,7 @@ function ManuscriptForm({
           <span>Title</span>
           <input
             className="text-input dark"
+            placeholder="Paste your title here..."
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           />
@@ -71,10 +55,10 @@ function ManuscriptForm({
           />
         </label>
         <div className="form-actions">
-          <button className="primary-button" type="submit" disabled={isLoading}>
+          <button className="primary-button" type="submit">
             Find Journals
           </button>
-          <button className="ghost-button" type="button" onClick={onClear} disabled={isLoading}>
+          <button className="ghost-button" type="button" onClick={onClear}>
             Clear form
           </button>
         </div>
