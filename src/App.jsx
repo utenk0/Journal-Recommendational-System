@@ -37,10 +37,8 @@ function App() {
   const [domain, setDomain] = useState('Mathematics')
   const [draftTitle, setDraftTitle] = useState('')
   const [draftAbstractText, setDraftAbstractText] = useState('')
-  const [draftReferences, setDraftReferences] = useState('')
   const [searchTitle, setSearchTitle] = useState('')
   const [searchAbstractText, setSearchAbstractText] = useState('')
-  const [searchReferences, setSearchReferences] = useState('')
   const [route, setRoute] = useState(() => readRouteFromHash())
   const [journals, setJournals] = useState([])
   const [query, setQuery] = useState(null)
@@ -75,7 +73,6 @@ function App() {
         const payload = await fetchJournals({
           title: searchTitle,
           abstractText: searchAbstractText,
-          references: searchReferences,
           domain,
           sortBy: 'match',
         })
@@ -98,7 +95,7 @@ function App() {
 
     loadJournals()
     return () => abortController.abort()
-  }, [route.name, searchTitle, searchAbstractText, searchReferences, domain, resultsReloadKey])
+  }, [route.name, searchTitle, searchAbstractText, domain, resultsReloadKey])
 
   useEffect(() => {
     if (route.name !== 'journal') return undefined
@@ -133,7 +130,6 @@ function App() {
   const runSearch = () => {
     setSearchTitle(draftTitle)
     setSearchAbstractText(draftAbstractText)
-    setSearchReferences(draftReferences)
     setRoute({ name: 'results', journalId: null })
 
     if (window.location.hash === '#results') {
@@ -146,10 +142,8 @@ function App() {
   const clearSearch = () => {
     setDraftTitle('')
     setDraftAbstractText('')
-    setDraftReferences('')
     setSearchTitle('')
     setSearchAbstractText('')
-    setSearchReferences('')
     setQuery(null)
   }
 
@@ -307,8 +301,6 @@ function App() {
             setTitle={setDraftTitle}
             abstractText={draftAbstractText}
             setAbstractText={setDraftAbstractText}
-            references={draftReferences}
-            setReferences={setDraftReferences}
             onSubmitSearch={runSearch}
             onClear={clearSearch}
           />

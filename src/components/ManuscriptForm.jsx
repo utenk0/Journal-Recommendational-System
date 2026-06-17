@@ -3,8 +3,6 @@ function ManuscriptForm({
   setTitle,
   abstractText,
   setAbstractText,
-  references,
-  setReferences,
   onSubmitSearch,
   onClear,
 }) {
@@ -43,15 +41,6 @@ function ManuscriptForm({
             placeholder="Paste your abstract here..."
             value={abstractText}
             onChange={(event) => setAbstractText(event.target.value)}
-          />
-        </label>
-        <label className="field">
-          <span>References (Optional)</span>
-          <textarea
-            className="text-input dark"
-            placeholder="Paste references, one per line..."
-            value={references}
-            onChange={(event) => setReferences(event.target.value)}
           />
         </label>
         <div className="form-actions">
